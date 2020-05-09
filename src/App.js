@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Context from "./context";
 import TodoList from "./TodoList";
 
 export default function App() {
@@ -28,21 +29,38 @@ export default function App() {
     }
   };
 
+  const removeTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const toggleTodo = (id) => {
+    setTodos(
+      todos.map((todo) => {
+        if (todo.id === id) {
+          todo.completed = !todo.completed;
+        }
+        return todo;
+      })
+    );
+  };
+
   return (
-    <div className="container">
-      <h1>Todo app</h1>
+    <Context.Provider value={{ removeTodo, toggleTodo }}>
+      <div className="container">
+        <h1>Todo app</h1>
 
-      <div className="input-field">
-        <input
-          type="text"
-          value={todoTitle}
-          onChange={(event) => setTodoTitle(event.target.value)}
-          onKeyPress={(event) => addTodo(event)}
-        />
-        <label>Todo name</label>
+        <div className="input-field">
+          <input
+            type="text"
+            value={todoTitle}
+            onChange={(event) => setTodoTitle(event.target.value)}
+            onKeyPress={(event) => addTodo(event)}
+          />
+          <label>Todo name</label>
+        </div>
+
+        <TodoList todos={todos} />
       </div>
-
-      <TodoList todos={todos} />
-    </div>
+    </Context.Provider>
   );
 }
